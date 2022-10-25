@@ -873,6 +873,7 @@ void Attract_LoadBG3GFX() {  // 80e36d
   DecompAndUpload2bpp(&g_zenv.vram[0x7800], 0x67);
 }
 
+// Works
 void Graphics_LoadChrHalfSlot() {  // 80e3fa
   int k = load_chr_halfslot_even_odd;
   if (k == 0)
@@ -924,7 +925,7 @@ void Graphics_LoadChrHalfSlot() {  // 80e3fa
     uint8 *src = sprdata, *src2 = sprdata + 16;
     int n = 8;
     do {
-      uint16 t = WORD(src[0]);
+      uint16 t = le16(WORD(src[0]));
       uint8 u = src2[0];
       WORD(dst[0]) = t;
       WORD(dst[16]) = (t | (t >> 8) | u) << 8 | u;
