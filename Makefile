@@ -1,41 +1,164 @@
-TARGET_EXEC:=zelda3
-ROM:=tables/zelda3.sfc
-SRCS:=$(wildcard *.c snes/*.c) third_party/gl_core/gl_core_3_1.c third_party/opus-1.3.1-stripped/opus_decoder_amalgam.c
-OBJS:=$(SRCS:%.c=%.o)
-PYTHON:=/usr/bin/env python3
-CFLAGS:=$(if $(CFLAGS),$(CFLAGS),-O2 -Werror)
-CFLAGS:=${CFLAGS} $(shell sdl2-config --cflags) -DSYSTEM_VOLUME_MIXER_AVAILABLE=0
+#-------------------------------------------------------------------------------
+.SUFFIXES:
+#-------------------------------------------------------------------------------
 
-ifeq (${OS},Windows_NT)
-    WINDRES:=windres
-    RES:=zelda3.res
-    SDLFLAGS:=-Wl,-Bstatic $(shell sdl2-config --static-libs)
-else
-    SDLFLAGS:=$(shell sdl2-config --libs) -lm
+ifeq ($(strip $(DEVKITPRO)),)
+$(error "Please set DEVKITPRO in your environment. export DEVKITPRO=<path to>/devkitpro")
 endif
 
-.PHONY: all clean clean_obj clean_gen
+TOPDIR ?= $(CURDIR)
 
-all: $(TARGET_EXEC) tables/zelda3_assets.dat
-$(TARGET_EXEC): $(OBJS) $(RES)
-	$(CC) $^ -o $@ $(LDFLAGS) $(SDLFLAGS)
-%.o : %.c
-	$(CC) -c $(CFLAGS) $< -o $@
+include $(DEVKITPRO)/wut/share/wut_rules
 
-$(RES): platform/win32/zelda3.rc
-	@echo "Generating Windows resources"
-	@$(WINDRES) $< -O coff -o $@
+#-------------------------------------------------------------------------------
+# TARGET is the name of the output
+# BUILD is the directory where object files & intermediate files will be placed
+# SOURCES is a list of directories containing source code
+# DATA is a list of directories containing data files
+# INCLUDES is a list of directories containing header files
+#-------------------------------------------------------------------------------
+TARGET		:=	SDL2_Playground
+BUILD		:=	build
+SOURCES		:=	./  \
+				third_party/gl_core \
+				third_party/stb \
+                snes
+DATA		:=
+INCLUDES	:=	./
 
-tables/zelda3_assets.dat: tables/dialogue.txt
-	@echo "Compiling game resources"
-	@cd tables; $(PYTHON) compile_resources.py ../$(ROM)
-tables/dialogue.txt:
-	@echo "Extracting game resources"
-	@cd tables; $(PYTHON) extract_resources.py ../$(ROM)
+#-------------------------------------------------------------------------------
+# options for code generation
+#-------------------------------------------------------------------------------
++CFLAGS :=  -g -Wall -O0 -ffunction-sections `$(PREFIX)pkg-config --cflags SDL2_mixer SDL2_ttf SDL2_image` \
+			$(MACHDEP)
 
-clean: clean_obj clean_gen
-clean_obj:
-	@$(RM) $(OBJS) $(TARGET_EXEC)
-clean_gen:
-	@$(RM) $(RES) tables/zelda3_assets.dat tables/*.txt tables/*.png tables/sprites/*.png tables/*.yaml
-	@rm -rf tables/__pycache__ tables/dungeon tables/img tables/overworld tables/sound
+CFLAGS	+=	$(INCLUDE) -D__WIIU__ -D__WUT__  -fno-strict-aliasing -mstrict-align
+
+CXXFLAGS	:= $(CFLAGS) -std=c++20
+
+ASFLAGS	:=	-g $(ARCH)
+LDFLAGS	=	-g $(ARCH) $(RPXSPECS) -Wl,-Map,$(notdir $*.map)
+
+LIBS   :=   `$(PREFIX)pkg-config --libs SDL2_mixer SDL2_ttf SDL2_image`
+
+#-------------------------------------------------------------------------------
+# list of directories containing libraries, this must be the top level
+# containing include and lib
+#-------------------------------------------------------------------------------
+LIBDIRS	:= $(PORTLIBS) $(WUT_ROOT)
+
+#-------------------------------------------------------------------------------
+# no real need to edit anything past this point unless you need to add additional
+# rules for different file extensions
+#-------------------------------------------------------------------------------
+ifneq ($(BUILD),$(notdir $(CURDIR)))
+#-------------------------------------------------------------------------------
+
+export OUTPUT	:=	$(CURDIR)/$(TARGET)
+export TOPDIR	:=	$(CURDIR)
+
+export VPATH	:=	$(foreach dir,$(SOURCES),$(CURDIR)/$(dir)) \
+			$(foreach dir,$(DATA),$(CURDIR)/$(dir))
+
+export DEPSDIR	:=	$(CURDIR)/$(BUILD)
+
+CFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
+CPPFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
+SFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
+BINFILES	:=	$(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.*)))
+
+#-------------------------------------------------------------------------------
+# use CXX for linking C++ projects, CC for standard C
+#-------------------------------------------------------------------------------
+ifeq ($(strip $(CPPFILES)),)
+#-------------------------------------------------------------------------------
+	export LD	:=	$(CC)
+#-------------------------------------------------------------------------------
+else
+#-------------------------------------------------------------------------------
+	export LD	:=	$(CXX)
+#-------------------------------------------------------------------------------
+endif
+#-------------------------------------------------------------------------------
+
+export OFILES_BIN	:=	$(addsuffix .o,$(BINFILES))
+export OFILES_SRC	:=	$(CPPFILES:.cpp=.o) $(CFILES:.c=.o) $(SFILES:.s=.o)
+export OFILES 	:=	$(OFILES_BIN) $(OFILES_SRC)
+export HFILES_BIN	:=	$(addsuffix .h,$(subst .,_,$(BINFILES)))
+
+export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) \
+			$(foreach dir,$(LIBDIRS),-I$(dir)/include) \
+			-I$(CURDIR)/$(BUILD)
+
+export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib)
+
+.PHONY: $(BUILD) clean all
+
+#-------------------------------------------------------------------------------
+all: $(BUILD)
+
+$(BUILD):
+	@$(shell [ ! -d $(BUILD) ] && mkdir -p $(BUILD))
+	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
+
+#-------------------------------------------------------------------------------
+clean:
+	@echo clean ...
+	@rm -fr $(BUILD) $(TARGET).rpx $(TARGET).elf
+
+#-------------------------------------------------------------------------------
+else
+.PHONY:	all
+
+DEPENDS	:=	$(OFILES:.o=.d)
+
+#-------------------------------------------------------------------------------
+# main targets
+#-------------------------------------------------------------------------------
+
+all	:	 $(OUTPUT).rpx
+
+
+$(OUTPUT).rpx	:	$(OUTPUT).elf
+$(OUTPUT).elf	:   $(OFILES)
+
+$(OFILES_SRC)	: $(HFILES_BIN)
+
+#-------------------------------------------------------------------------------
+# you need a rule like this for each extension you use as binary data
+#-------------------------------------------------------------------------------
+%.bin.o	%_bin.h :	%.bin
+#-------------------------------------------------------------------------------
+	@echo $(notdir $<)
+	@$(bin2o)
+
+%.png.o	%_png.h :	%.png
+	@echo $(notdir $<)
+	@$(bin2o)
+
+%.jpg.o	%_jpg.h :	%.jpg
+	@echo $(notdir $<)
+	@$(bin2o)
+
+%.ogg.o	%_ogg.h :	%.ogg
+	@echo $(notdir $<)
+	@$(bin2o)
+
+%.mp3.o	%_mp3.h :	%.mp3
+	@echo $(notdir $<)
+	@$(bin2o)
+
+%.ttf.o	%_ttf.h :	%.ttf
+	@echo $(notdir $<)
+	@$(bin2o)
+
+#---------------------------------------------------------------------------------
+%.o: %.s
+	@echo $(notdir $<)
+	@$(CC) -MMD -MP -MF $(DEPSDIR)/$*.d -x assembler-with-cpp $(ASFLAGS) -c $< -o $@ $(ERROR_FILTER)
+
+-include $(DEPENDS)
+
+#-------------------------------------------------------------------------------
+endif
+#-------------------------------------------------------------------------------

@@ -161,7 +161,8 @@ static void Dsp_Write(SpcPlayer *p, uint8_t reg, uint8 value) {
 }
 
 static void Not_Implemented() {
-  assert(0);
+  uint32_t * t = (uint32_t*) 0;
+  *t = 0;
   printf("Not Implemented\n");
 }
 

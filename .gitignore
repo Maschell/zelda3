@@ -26,6 +26,12 @@ __pycache__
 /tmp/
 /tables/zelda3_assets.dat
 /SDL2.dll
+cmake-build-debug/
+build/
+tables/zelda3.sfc
+.idea/
+*.elf
+*.rpx
 /zelda3.*.ini
 /zelda3.wiki
 /sprites-gfx

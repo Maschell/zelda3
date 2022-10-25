@@ -160,7 +160,7 @@ void ZeldaPlayMsuAudioTrack(uint8 music_ctrl) {
 static void MsuPlayer_CloseFile(MsuPlayer *mp) {
   if (mp->f)
     fclose(mp->f);
-  opus_decoder_destroy(mp->opus);
+  //opus_decoder_destroy(mp->opus);
   mp->opus = NULL;
   mp->f = NULL;
   if (mp->state != kMsuState_FinishedPlaying)
@@ -222,8 +222,8 @@ static void MsuPlayer_Open(MsuPlayer *mp, int orig_track, bool resume_from_snaps
   mp->buffer_size = mp->buffer_pos = 0;
   mp->preskip = 0;
   if (file_tag == (('Z' << 24) | ('U' << 16) | ('P' << 8) | 'O')) {
-    mp->opus = opus_decoder_create(48000, 2, NULL);
-    if (!mp->opus)
+    //mp->opus = opus_decoder_create(48000, 2, NULL);
+    //if (!mp->opus)
       goto READ_ERROR;
     if (mp->state == kMsuState_Resuming)
       fseek(mp->f, mp->cur_file_offs, SEEK_SET);
@@ -293,7 +293,7 @@ void MsuPlayer_Mix(MsuPlayer *mp, int16 *audio_buffer, int audio_samples) {
             MsuPlayer_CloseFile(mp);
             return;
           }
-          opus_decoder_ctl(mp->opus, OPUS_RESET_STATE);
+          //opus_decoder_ctl(mp->opus, OPUS_RESET_STATE);
           fseek(mp->f, mp->range_cur, SEEK_SET);
           uint8 *file_data = (uint8 *)mp->buffer;
           if (fread(file_data, 1, 10, mp->f) != 10) READ_ERROR: {
@@ -340,8 +340,8 @@ void MsuPlayer_Mix(MsuPlayer *mp, int16 *audio_buffer, int audio_samples) {
           mp->resume_info.offset = mp->cur_file_offs;
           mp->cur_file_offs += 2 + size;
           file_data[1] = 0xfc;
-          r = opus_decode(mp->opus, &file_data[2 - n], size + n, mp->buffer, 960, 0);
-          if (r <= 0)
+          //r = opus_decode(mp->opus, &file_data[2 - n], size + n, mp->buffer, 960, 0);
+          //if (r <= 0)
             goto READ_ERROR;
           if (r > mp->preskip)
             break;

@@ -42,7 +42,7 @@ typedef unsigned int uint;
 #ifdef _DEBUG
 #define kDebugFlag 1
 #else
-#define kDebugFlag 0
+#define kDebugFlag 1
 #endif
 
 static FORCEINLINE uint16 abs16(uint16 t) { return sign16(t) ? -t : t; }

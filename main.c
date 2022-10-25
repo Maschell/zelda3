@@ -3,7 +3,9 @@
 #include <string.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include <SDL.h>
+#include "stdendian.h"
+#include <SDL2/SDL.h>
+#include "logger.h"
 #ifdef _WIN32
 #include "platform/win32/volume_control.h"
 #include <direct.h>
@@ -53,6 +55,32 @@ enum {
   kDefaultChannels = 2,
   kDefaultSamples = 2048,
 };
+
+#include <proc_ui/procui.h>
+#include <sys/iosupport.h>
+
+bool CheckRunning(){
+    switch(ProcUIProcessMessages(true))
+    {
+        case PROCUI_STATUS_EXITING:
+        {
+            return false;
+        }
+        case PROCUI_STATUS_RELEASE_FOREGROUND:
+        {
+            ProcUIDrawDoneRelease();
+            break;
+        }
+        case PROCUI_STATUS_IN_FOREGROUND:
+        {
+            break;
+        }
+        case PROCUI_STATUS_IN_BACKGROUND:
+        default:
+            break;
+    }
+    return true;
+}
 
 static const char kWindowTitle[] = "The Legend of Zelda: A Link to the Past";
 
@@ -236,7 +264,7 @@ static bool SdlRenderer_Init(SDL_Window *window) {
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");
 
   int tex_mult = (g_ppu_render_flags & kPpuRenderFlags_4x4Mode7) ? 4 : 1;
-  g_texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING,
+  g_texture = SDL_CreateTexture(renderer, SDL_GetWindowPixelFormat(window), SDL_TEXTUREACCESS_STREAMING,
                                 g_snes_width * tex_mult, g_snes_height * tex_mult);
   if (g_texture == NULL) {
     printf("Failed to create texture: %s\n", SDL_GetError());
@@ -279,6 +307,16 @@ static const struct RendererFuncs kSdlRendererFuncs  = {
 };
 
 void OpenGLRenderer_Create(struct RendererFuncs *funcs);
+#include <coreinit/debug.h>
+static ssize_t wiiu_log_write(struct _reent* r, void* fd, const char* ptr, size_t len) {
+    (void)r; (void)fd;
+    OSReport("%*.*s", len, len, ptr);
+    return len;
+}
+static devoptab_t dotab_stdout = {
+        .name = "udp_out",
+        .write_r = &wiiu_log_write,
+};
 
 #undef main
 int main(int argc, char** argv) {
@@ -295,10 +333,13 @@ int main(int argc, char** argv) {
   LoadLinkGraphics();
 
   ZeldaInitialize();
+
+  devoptab_list[STD_OUT] = &dotab_stdout;
+  devoptab_list[STD_ERR] = &dotab_stdout;
+
   g_zenv.ppu->extraLeftRight = UintMin(g_config.extended_aspect_ratio, kPpuExtraLeftRight);
   g_snes_width = (g_config.extended_aspect_ratio * 2 + 256);
   g_snes_height = (g_config.extend_y ? 240 : 224);
-
 
   // Delay actually setting those features in ram until any snapshots finish playing.
   g_wanted_zelda_features = g_config.features0;
@@ -375,7 +416,7 @@ int main(int argc, char** argv) {
     }
     g_audio_channels = have.channels;
     g_frames_per_block = (534 * have.freq) / 32000;
-    g_audiobuffer = malloc(g_frames_per_block * have.channels * sizeof(int16));
+    g_audiobuffer = (uint8_t*) malloc(g_frames_per_block * have.channels * sizeof(int16));
   }
 
   if (argc >= 1 && !g_run_without_emu)
@@ -403,6 +444,11 @@ int main(int argc, char** argv) {
     HandleCommand(kKeys_Load + 0, true);
 
   while(running) {
+      if(!CheckRunning()){
+          DEBUG_FUNCTION_LINE("exit");
+          exit(0);
+          break;
+      }
     while(SDL_PollEvent(&event)) {
       switch(event.type) {
       case SDL_CONTROLLERDEVICEADDED:
@@ -426,7 +472,7 @@ int main(int argc, char** argv) {
         if (event.button.button == SDL_BUTTON_LEFT && event.button.state == SDL_PRESSED && event.button.clicks == 2) {
           if ((g_win_flags & SDL_WINDOW_FULLSCREEN_DESKTOP) == 0 && (g_win_flags & SDL_WINDOW_FULLSCREEN) == 0 && SDL_GetModState() & KMOD_SHIFT) {
             g_win_flags ^= SDL_WINDOW_BORDERLESS;
-            SDL_SetWindowBordered(g_window, (g_win_flags & SDL_WINDOW_BORDERLESS) == 0);
+            SDL_SetWindowBordered(g_window, (SDL_bool) ((g_win_flags & SDL_WINDOW_BORDERLESS) == 0));
           }
         }
         break;
@@ -652,8 +698,8 @@ static void HandleCommand_Locked(uint32 j, bool pressed) {
 }
 
 static void HandleInput(int keyCode, int keyMod, bool pressed) {
-  int j = FindCmdForSdlKey(keyCode, keyMod);
-  if (j != 0)
+  int j = FindCmdForSdlKey(keyCode, (SDL_Keymod) keyMod);
+  if (j >= 0)
     HandleCommand(j, pressed);
 }
 

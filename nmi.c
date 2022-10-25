@@ -6,6 +6,7 @@
 #include "snes/ppu.h"
 #include "assets.h"
 #include "audio.h"
+#include "stdendian.h"
 
 static const uint8 kNmiVramAddrs[] = {
   0, 0, 4, 8, 12, 8, 12, 0, 4, 0, 8, 4, 12, 4, 12, 0,

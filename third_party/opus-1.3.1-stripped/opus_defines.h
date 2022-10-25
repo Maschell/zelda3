@@ -33,6 +33,8 @@
 #ifndef OPUS_DEFINES_H
 #define OPUS_DEFINES_H
 
+#define VAR_ARRAYS
+
 #include "opus_types.h"
 
 #ifdef __cplusplus
