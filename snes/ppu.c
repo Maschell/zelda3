@@ -7,6 +7,7 @@
 #include <assert.h>
 #include "ppu.h"
 #include "../types.h"
+#include "stdendian.h"
 
 static const uint8 kSpriteSizes[8][2] = {
   {8, 16}, {8, 32}, {8, 64}, {16, 32},
@@ -1249,17 +1250,17 @@ static bool ppu_evaluateSprites(Ppu* ppu, int line) {
   int tilesLeftOrg = tilesLeft;
 
   do {
-    int yy = ppu->oam[index] >> 8;
+    int yy = le16(ppu->oam[index]) >> 8;
     if (yy == 0xf0)
       continue;  // this works for zelda because sprites are always 8 or 16.
     // check if the sprite is on this line and get the sprite size
     int row = (line - yy) & 0xff;
-    int highOam = ppu->oam[0x100 + (index >> 4)] >> (index & 15);
+    int highOam = le16(ppu->oam[0x100 + (index >> 4)]) >> (index & 15);
     int spriteSize = spriteSizes[(highOam >> 1) & 1];
     if (row >= spriteSize)
       continue;
     // in y-range, get the x location, using the high bit as well
-    int x = (ppu->oam[index] & 0xff) + (highOam & 1) * 256;
+    int x = (le16(ppu->oam[index]) & 0xff) + (highOam & 1) * 256;
     x -= (x >= 256 + extra_left_right) * 512;
     // if in x-range
     if (x <= -(spriteSize + extra_left_right))
@@ -1269,7 +1270,7 @@ static bool ppu_evaluateSprites(Ppu* ppu, int line) {
       break;
     }
     // get some data for the sprite and y-flip row if needed
-    int oam1 = ppu->oam[index + 1];
+    int oam1 = le16(ppu->oam[index + 1]);
     int objAdr = (oam1 & 0x100) ? ppu->objTileAdr2 : ppu->objTileAdr1;
     if (oam1 & 0x8000)
       row = spriteSize - 1 - row;
