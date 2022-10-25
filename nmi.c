@@ -447,7 +447,7 @@ void HandleStripes14(const uint8 *p) {  // 8092a1
         assert((len & 1) == 0);
         len >>= 1;
         for (int i = 0; i < len; i++, dst += 32, p += 2)
-          WORD(*dst) = WORD(*p);
+          WORD(*dst) = le16(WORD(*p));
       }
     }
   }
