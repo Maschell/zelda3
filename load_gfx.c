@@ -936,11 +936,12 @@ void TransferFontToVRAM() {  // 80e556
   memcpy(&g_zenv.vram[0x7000], kFontData, 0x800 * sizeof(uint16));
 }
 
+// WORKS!
 void Do3To4High(uint16 *vram_ptr, const uint8 *decomp_addr) {  // 80e5af
   for (int j = 0; j < 64; j++) {
     uint16 *t = (uint16 *)&dung_line_ptrs_row0;
     for (int i = 7; i >= 0; i--, decomp_addr += 2) {
-      uint16 d = *(uint16 *)decomp_addr;
+      uint16 d = le16(*(uint16 *)decomp_addr);
       t[i] = (d | (d >> 8)) & 0xff;
       *vram_ptr++ = d;
     }
