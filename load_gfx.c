@@ -854,7 +854,7 @@ void LoadDefaultGraphics() {  // 80e2d0
   int num = 64;
   do {
     for (int i = 7; i >= 0; i--, src += 2) {
-      *vram_ptr++ = WORD(src[0]);
+      *vram_ptr++ = le16(WORD(src[0]));
       tmp[i] = src[0] | src[1];
     }
     for (int i = 7; i >= 0; i--, src++) {
