@@ -52,13 +52,15 @@ static FORCEINLINE int IntMax(int a, int b) { return a > b ? a : b; }
 static FORCEINLINE uint UintMin(uint a, uint b) { return a < b ? a : b; }
 static FORCEINLINE uint UintMax(uint a, uint b) { return a > b ? a : b; }
 
+
 // windows.h defines this too
 #ifdef HIBYTE
 #undef HIBYTE
 #endif
 
-#define BYTE(x) (*(uint8*)&(x))
-#define HIBYTE(x) (((uint8*)&(x))[1])
+#define HIBYTE(x) (*(uint8*)&(x))
+#define BYTE(x) (((uint8*)&(x))[1])
+
 #define WORD(x) (*(uint16*)&(x))
 #define DWORD(x) (*(uint32*)&(x))
 #define XY(x, y) ((y)*64+(x))
