@@ -16,6 +16,7 @@
 #include "attract.h"
 #include "nmi.h"
 #include "assets.h"
+#include "stdendian.h"
 
 static void WorldMap_AddSprite(int spr, uint8 big, uint8 flags, uint8 ch, uint16 x, uint16 y);
 static bool WorldMap_CalculateOamCoordinates(Point16U *pt);
@@ -336,11 +337,11 @@ static PlayerHandlerFunc *const kModule_Death[16] = {
 static const uint8 kLocationMenuStartPos[3] = {0, 1, 6};
 static void RunInterface();
 const uint8 *GetDungmapFloorLayout() {
-  return kDungMap_FloorLayout + *(uint32 *)(kDungMap_FloorLayout + (cur_palace_index_x2 >> 1) * 4);
+  return kDungMap_FloorLayout + le32(*(uint32 *)(kDungMap_FloorLayout + (cur_palace_index_x2 >> 1) * 4));
 }
 
 uint8 GetOtherDungmapInfo(int count) {
-  const uint8 *p = kDungMap_Tiles + *(uint32 *)(kDungMap_Tiles + (cur_palace_index_x2 >> 1) * 4);
+  const uint8 *p = kDungMap_Tiles + le32(*(uint32 *)(kDungMap_Tiles + (cur_palace_index_x2 >> 1) * 4));
   return p[count];
 }
 

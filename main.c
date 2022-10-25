@@ -870,10 +870,10 @@ static void LoadAssets() {
       *(uint32*)(data + 80) != kNumberOfAssets)
     Die("Invalid assets file");
 
-  uint32 offset = 88 + kNumberOfAssets * 4 + *(uint32 *)(data + 84);
+  uint32 offset = 88 + kNumberOfAssets * 4 + le32(*(uint32 *)(data + 84));
 
   for (size_t i = 0; i < kNumberOfAssets; i++) {
-    uint32 size = *(uint32 *)(data + 88 + i * 4);
+    uint32 size = le32(*(uint32 *)(data + 88 + i * 4));
     offset = (offset + 3) & ~3;
     if ((uint64)offset + size > length)
       Die("Assets file corruption");
@@ -881,6 +881,85 @@ static void LoadAssets() {
     g_asset_ptrs[i] = data + offset;
     offset += size;
   }
+    uint32_t index;
+    index = 4; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 5; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 7; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 9; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 10; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 11; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 13; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 14; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 15; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 16; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 17; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 18; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 26; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 28; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 43; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 47; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 49; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 51; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 53; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 54; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 55; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 59; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 64; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 71; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 79; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 80; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 82; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 83; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 84; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 85; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 86; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 87; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 88; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 89; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 90; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 91; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 92; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 93; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 94; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 95; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 96; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 110; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 113; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 114; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 115; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 116; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 117; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 118; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 119; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 120; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 123; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 124; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 125; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 127; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 128; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 131; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 132; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 133; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 134; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 135; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 136; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 137; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 138; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 139; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 140; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 143; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 144; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 145; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 146; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 147; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 148; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 149; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 150; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 151; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 157; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+    index = 159; for (uint32_t i = 0; i < (g_asset_sizes[index]) / sizeof(uint16_t); i++) { ((uint16 *) g_asset_ptrs[index])[i] = le16(((uint16 *) g_asset_ptrs[index])[i]); }
+
+
 }
 
 // Go some steps up and find zelda3.ini

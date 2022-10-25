@@ -11,6 +11,7 @@
 #include "player_oam.h"
 #include "snes/snes_regs.h"
 #include "assets.h"
+#include "stdendian.h"
 
 const uint16 kOverworld_OffsetBaseX[64] = {
   0,     0, 0x400, 0x600, 0x600, 0xa00, 0xa00, 0xe00,
@@ -2449,11 +2450,11 @@ void Overworld_DecompressAndDrawAllQuadrants() {  // 82f54a
 }
 
 static const uint8 *GetOverworldHibytes(int i) {
-  return kOverworld_Hibytes_Comp + *(uint32 *)(kOverworld_Hibytes_Comp + i * 4);
+  return kOverworld_Hibytes_Comp + le32(*(uint32 *)(kOverworld_Hibytes_Comp + i * 4));
 }
 
 static const uint8 *GetOverworldLobytes(int i) {
-  return kOverworld_Lobytes_Comp + *(uint32 *)(kOverworld_Lobytes_Comp + i * 4);
+  return kOverworld_Lobytes_Comp + le32(*(uint32 *)(kOverworld_Lobytes_Comp + i * 4));
 }
 
 

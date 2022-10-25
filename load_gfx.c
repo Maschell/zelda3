@@ -6,6 +6,7 @@
 #include "player.h"
 #include "sprite.h"
 #include "assets.h"
+#include "stdendian.h"
 
 // Allow this to be overwritten
 uint16 kGlovesColor[2] = {0x52f6, 0x376};
@@ -325,7 +326,7 @@ static const int8 kGraphicsLoadSp6[20] = {
 static const uint8 kMirrorWarp_LoadNext_NmiLoad[15] = {0, 14, 15, 16, 17, 0, 0, 0, 0, 0, 0, 18, 19, 20, 0};
 
 static const uint8 *GetCompSpritePtr(int i) {
-  return kSprGfx + *(uint32 *)(kSprGfx + i * 4);
+  return kSprGfx + le32(*(uint32 *)(kSprGfx + i * 4));
 }
 
 void ApplyPaletteFilter_bounce() {
@@ -1000,7 +1001,7 @@ int Decomp_spr(uint8 *dst, int gfx) {  // 80e772
 }
 
 int Decomp_bg(uint8 *dst, int gfx) {  // 80e78f
-  const uint8 *p = kBgGfx + *(uint32 *)(kBgGfx + gfx * 4);
+  const uint8 *p = kBgGfx + le32(*(uint32 *)(kBgGfx + gfx * 4));
   return Decompress(dst, p);
 }
 
