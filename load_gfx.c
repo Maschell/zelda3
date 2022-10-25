@@ -564,12 +564,13 @@ void DecodeAnimatedSpriteTile_variable(uint8 a) {  // 80d4ed
   WriteTo4BPPBuffer_at_7F4000(a);
 }
 
+// Works
 void Expand3To4High(uint8 *dst, const uint8 *src, const uint8 *base, int num) {  // 80d61c
   do {
     const uint8 *src2 = src + 0x10;
     int n = 8;
     do {
-      uint16 t = WORD(src[0]);
+      uint16 t = le16(WORD(src[0]));
       uint8 u = src2[0];
       WORD(dst[0]) = t;
       WORD(dst[0x10]) = (t | (t >> 8) | u) << 8 | u;
@@ -1007,6 +1008,7 @@ int Decomp_bg(uint8 *dst, int gfx) {  // 80e78f
   return Decompress(dst, p);
 }
 
+// Works
 int Decompress(uint8 *dst, const uint8 *src) {  // 80e79e
   uint8 *dst_org = dst;
   int len;
