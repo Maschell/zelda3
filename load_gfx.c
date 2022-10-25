@@ -792,12 +792,13 @@ void Do3To4High16Bit(uint8 *dst, const uint8 *src, int num) {  // 80df4f
 
 }
 
+// works
 void Do3To4Low16Bit(uint8 *dst, const uint8 *src, int num) {  // 80dfb8
   do {
     const uint8 *src2 = src + 0x10;
     int n = 8;
     do {
-      WORD(dst[0]) = WORD(src[0]);
+      WORD(dst[0]) = le16(WORD(src[0]));
       WORD(dst[0x10]) = src2[0];
       src += 2, src2 += 1, dst += 2;
     } while (--n);
