@@ -952,10 +952,11 @@ void Do3To4High(uint16 *vram_ptr, const uint8 *decomp_addr) {  // 80e5af
   }
 }
 
+// Works
 void Do3To4Low(uint16 *vram_ptr, const uint8 *decomp_addr) {  // 80e63c
   for (int j = 0; j < 64; j++) {
     for (int i = 0; i < 8; i++, decomp_addr += 2)
-      *vram_ptr++ = *(uint16 *)decomp_addr;
+      *vram_ptr++ = le16(*(uint16 *)decomp_addr);
     for (int i = 0; i < 8; i++, decomp_addr += 1)
       *vram_ptr++ = *decomp_addr;
   }
