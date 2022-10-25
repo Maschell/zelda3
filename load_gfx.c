@@ -499,6 +499,7 @@ void DecompressShieldGraphics() {  // 80d308
   Expand3To4High(&g_ram[0x9000 + 0x3c0], src + 0x180, g_ram,6);
 }
 
+// Works
 void DecompressAnimatedDungeonTiles(uint8 a) {  // 80d337
   Decomp_bg(&g_ram[0x14000], a);
   Do3To4Low16Bit(&g_ram[0x9000 + 0x1680], &g_ram[0x14000], 48);
@@ -846,6 +847,7 @@ void InitializeTilesets() {  // 80e19b
   LoadBackgroundGraphics(&g_zenv.vram[0x3c00], mt[7], 0, &g_ram[0x14000]);
 }
 
+// Works
 void LoadDefaultGraphics() {  // 80e2d0
   const uint8 *src = GetCompSpritePtr(0);
 
